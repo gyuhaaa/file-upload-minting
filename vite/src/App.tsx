@@ -35,7 +35,38 @@ const App: FC = () => {
         }
       );
 
-      return `https://jade-junior-ape-105.mypinata.cloud/ipfs/${response.data.IpfsHash}`;
+      return `https://slime-project.mypinata.cloud/ipfs/${response.data.IpfsHash}`;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const uploadMetadata = async (image: string) => {
+    try {
+      const metadata = JSON.stringify({
+        pinataContent: {
+          name: "Test2",
+          description: "Test2",
+          image,
+        },
+        pinataMetadata: {
+          name: "test.json",
+        },
+      });
+
+      const response = await axios.post(
+        "https://api.pinata.cloud/pinning/pinJSONToIPFS",
+        metadata,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            pinata_api_key: import.meta.env.VITE_PINATA_KEY,
+            pinata_secret_api_key: import.meta.env.VITE_PINATA_SECRET,
+          },
+        }
+      );
+
+      return `https://slime-project.mypinata.cloud/ipfs/${response.data.IpfsHash}`;
     } catch (error) {
       console.error(error);
     }
@@ -49,19 +80,11 @@ const App: FC = () => {
 
       formData.append("file", e.currentTarget.files[0]);
 
-      const response = await axios.post(
-        "https://api.pinata.cloud/pinning/pinFileToIPFS",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            pinata_api_key: import.meta.env.VITE_PINATA_KEY,
-            pinata_secret_api_key: import.meta.env.VITE_PINATA_SECRET,
-          },
-        }
-      );
+      const imageUrl = await uploadImage(formData);
 
-      console.log(response);
+      const metadataUrl = await uploadMetadata(imageUrl!);
+
+      console.log(metadataUrl);
     } catch (error) {
       console.error(error);
     }
