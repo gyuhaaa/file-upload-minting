@@ -35,7 +35,7 @@ const App: FC = () => {
         }
       );
 
-      return `https://slime-project.mypinata.cloud/ipfs/${response.data.IpfsHash}`;
+      return `https://jade-junior-ape-105.mypinata.cloud/ipfs/${response.data.IpfsHash}`;
     } catch (error) {
       console.error(error);
     }
